@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Banana OD ist eine lokale Windows-Arbeitsumgebung für KI-Chat, Agenten, Dateien, Terminal, MCP, Skills und Projekte.">
+  <meta name="theme-color" content="#111111">
+  <title>Banana OD – Lokale KI-Arbeitsumgebung</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4v18L6 22z' fill='%23e06c75'/%3E%3Cpath d='M16 8v14h8z' fill='%23f0989e'/%3E%3Cpath d='M4 25q6-4 12 0t12 0' fill='none' stroke='%239cdef2' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --page: #111111;
+      --surface: #1e2228;
+      --surface-strong: #282c34;
+      --text: #d8eef4;
+      --muted: #88a6af;
+      --cyan: #9cdef2;
+      --coral: #e06c75;
+      --coral-light: #f0989e;
+      --line: #355a66;
+      --good: #72d99b;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--text);
+      font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", Consolas, monospace;
+      line-height: 1.65;
+    }
+    a { color: inherit; }
+    a:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
+    img { display: block; max-width: 100%; }
+
+    .wrap { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .skip-link {
+      position: absolute; left: 16px; top: -80px; z-index: 100;
+      background: var(--cyan); color: #111; padding: 10px 14px;
+    }
+    .skip-link:focus { top: 12px; }
+
+    nav {
+      position: sticky; top: 0; z-index: 20;
+      border-bottom: 1px solid rgba(156, 222, 242, .22);
+      background: rgba(17, 17, 17, .94);
+      backdrop-filter: blur(12px);
+    }
+    nav .wrap {
+      min-height: 62px; display: flex; align-items: center;
+      justify-content: space-between; gap: 24px;
+    }
+    .brand { color: var(--coral-light); font-weight: 800; text-decoration: none; letter-spacing: .04em; }
+    .nav-links { display: flex; gap: 22px; font-size: .82rem; }
+    .nav-links a { color: var(--muted); text-decoration: none; }
+    .nav-links a:hover { color: var(--cyan); }
+
+    header {
+      padding: 86px 0 58px;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(53, 90, 102, .28), transparent 33rem),
+        linear-gradient(180deg, #17191e, var(--page));
+      border-bottom: 1px solid rgba(53, 90, 102, .5);
+    }
+    .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, .92fr); gap: 58px; align-items: center; }
+    .kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--cyan); font-size: .78rem; letter-spacing: .12em;
+      text-transform: uppercase; font-weight: 800;
+    }
+    .kicker::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--good); }
+    h1 { margin: 18px 0 18px; color: #f5fbfc; font-size: clamp(2.4rem, 7vw, 5.6rem); line-height: .98; letter-spacing: -.065em; }
+    h1 span { display: block; color: var(--coral-light); }
+    .lede { max-width: 660px; color: var(--muted); font-size: clamp(1rem, 2vw, 1.18rem); }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 44px; padding: 10px 16px; border: 1px solid var(--line);
+      border-radius: 7px; color: var(--cyan); text-decoration: none; font-weight: 800;
+    }
+    .button.primary { color: #111; border-color: var(--coral-light); background: var(--coral-light); }
+    .button:hover { border-color: var(--coral-light); transform: translateY(-1px); }
+    .hero-note { margin-top: 18px; color: #6f8a92; font-size: .76rem; }
+
+    .hero-console {
+      border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+      background: var(--surface); box-shadow: 0 28px 70px rgba(0, 0, 0, .38);
+    }
+    .console-bar { display: flex; gap: 6px; padding: 12px; background: #181b20; border-bottom: 1px solid #2d4148; }
+    .console-bar i { width: 9px; height: 9px; border-radius: 50%; background: #41535a; }
+    .console-body { padding: 26px; }
+    .console-body p { margin: 0 0 18px; color: var(--muted); font-size: .86rem; }
+    .console-body strong { color: var(--cyan); }
+    .console-line { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-top: 1px solid rgba(53, 90, 102, .36); font-size: .8rem; }
+    .console-line span:first-child { color: var(--coral-light); }
+
+    section { padding: 76px 0; border-bottom: 1px solid rgba(53, 90, 102, .38); }
+    .section-head { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 42px; margin-bottom: 40px; }
+    .section-label { color: var(--coral-light); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 800; }
+    h2 { margin: 0; color: #f5fbfc; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.12; letter-spacing: -.045em; }
+    .section-copy { margin: 15px 0 0; color: var(--muted); max-width: 720px; }
+
+    .screenshot {
+      margin: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+      background: var(--surface); box-shadow: 0 30px 80px rgba(0, 0, 0, .28);
+    }
+    .screenshot img { width: 100%; height: auto; }
+    .screenshot figcaption { padding: 13px 16px; color: var(--muted); font-size: .75rem; border-top: 1px solid var(--line); }
+
+    .capabilities { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); }
+    .capability { display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 25px 24px 25px 0; border-bottom: 1px solid var(--line); }
+    .capability:nth-child(odd) { border-right: 1px solid var(--line); padding-right: 30px; }
+    .capability:nth-child(even) { padding-left: 30px; }
+    .capability .num { color: var(--coral-light); font-size: .76rem; font-weight: 800; }
+    .capability h3 { margin: 0 0 7px; color: var(--cyan); font-size: 1rem; }
+    .capability p { margin: 0; color: var(--muted); font-size: .86rem; }
+
+    .proof { display: grid; grid-template-columns: 1.2fr .8fr; gap: 22px; }
+    .proof-main, .proof-side { background: var(--surface); border: 1px solid var(--line); border-radius: 9px; padding: 30px; }
+    .big-number { color: var(--good); font-size: clamp(3rem, 8vw, 6rem); line-height: 1; letter-spacing: -.08em; font-weight: 900; }
+    .proof h3 { color: #fff; margin: 12px 0 8px; }
+    .proof p, .proof li { color: var(--muted); font-size: .86rem; }
+    .proof ul { margin: 18px 0 0; padding-left: 20px; }
+    .proof-side dl { display: grid; gap: 15px; margin: 0; }
+    .proof-side div { padding-bottom: 14px; border-bottom: 1px solid rgba(53, 90, 102, .55); }
+    .proof-side div:last-child { border-bottom: 0; padding-bottom: 0; }
+    dt { color: var(--coral-light); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; }
+    dd { margin: 4px 0 0; color: var(--cyan); font-weight: 800; }
+
+    .idea {
+      display: grid; grid-template-columns: 1fr 1.1fr; gap: 38px; align-items: start;
+      background: var(--surface-strong); border: 1px solid var(--line); border-left: 5px solid var(--coral);
+      padding: 34px; border-radius: 9px;
+    }
+    .idea h3 { margin: 0 0 12px; color: #fff; font-size: 1.45rem; }
+    .idea p { margin: 0; color: var(--muted); }
+    .routing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .role { min-height: 132px; padding: 16px; background: #17191e; border: 1px solid var(--line); border-radius: 7px; }
+    .role strong { display: block; color: var(--cyan); margin-bottom: 8px; }
+    .role span { color: var(--muted); font-size: .75rem; }
+    .planned { display: inline-block; margin-top: 17px; color: var(--coral-light); font-size: .73rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; }
+
+    footer { padding: 34px 0 52px; color: #6f8a92; font-size: .76rem; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 24px; }
+
+    @media (max-width: 820px) {
+      .hero, .section-head, .proof, .idea { grid-template-columns: minmax(0, 1fr); }
+      .hero > *, .section-head > *, .proof > *, .idea > * { min-width: 0; }
+      .hero { gap: 36px; }
+      .nav-links a:not(:last-child) { display: none; }
+      .capabilities { grid-template-columns: 1fr; }
+      .capability, .capability:nth-child(odd), .capability:nth-child(even) { border-right: 0; padding: 22px 0; }
+      .routing { grid-template-columns: 1fr; }
+      footer .wrap { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      .wrap { width: min(var(--max), calc(100% - 28px)); }
+      header { padding-top: 60px; }
+      section { padding: 58px 0; }
+      .actions { flex-direction: column; align-items: stretch; }
+      .button { width: 100%; text-align: center; }
+      .console-body, .proof-main, .proof-side, .idea { padding: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .button:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <nav aria-label="Hauptnavigation">
+    <div class="wrap">
+      <a class="brand" href="#top">▲ Banana OD</a>
+      <div class="nav-links">
+        <a href="#app">App</a>
+        <a href="#features">Funktionen</a>
+        <a href="#proof">Freigabe</a>
+        <a href="#idea">Nächste Idee</a>
+      </div>
+    </div>
+  </nav>
+
+  <header id="top">
+    <div class="wrap hero">
+      <div>
+        <div class="kicker">Windows · lokal · kontrolliert</div>
+        <h1>KI, die nicht nur <span>antwortet.</span></h1>
+        <p class="lede">Banana OD verbindet Chat, Agenten und echte Werkzeuge in einer lokalen Windows-Arbeitsumgebung. Modelle können Projekte verstehen, Dateien bearbeiten und Aufgaben ausführen – mit sichtbaren Grenzen und Freigaben.</p>
+        <div class="actions">
+          <a class="button primary" href="#app">App ansehen</a>
+          <a class="button" href="https://github.com/lokitheloki/banana-od">Öffentliches Repository</a>
+        </div>
+        <p class="hero-note">Öffentlicher Release in Vorbereitung · ungeprüfte Entwicklungsstände bleiben privat</p>
+      </div>
+
+      <aside class="hero-console" aria-label="Kurzübersicht">
+        <div class="console-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="console-body">
+          <p><strong>&gt; banana status</strong><br>Eine Oberfläche, mehrere KI-Wege.</p>
+          <div class="console-line"><span>Chat</span><span>lokale und Cloud-Modelle</span></div>
+          <div class="console-line"><span>Werkzeuge</span><span>Dateien, Terminal, MCP, Skills</span></div>
+          <div class="console-line"><span>Kontext</span><span>Projekte, Memory, Übergaben</span></div>
+          <div class="console-line"><span>Kontrolle</span><span>Freigaben, Rechte, Protokolle</span></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="app">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-label">Die App</div>
+          <div>
+            <h2>Ein echtes Programm – kein zusätzlicher Browser-Tab.</h2>
+            <p class="section-copy">Banana OD startet als eigenes Windows-Fenster auf dem lokalen Rechner. Wird das Fenster geschlossen, endet auch der zugehörige lokale Server.</p>
+          </div>
+        </div>
+        <figure class="screenshot">
+          <img src="assets/banana-od-app.png" width="1280" height="820" alt="Banana OD in einem Windows-Fenster mit Chat-Eingabe und Navigation für Tools, Banana Control, Kalender, Recherche, Galerie, Notizen und Aufgaben.">
+          <figcaption>Echter Screenshot von Banana OD mit einem sauberen Demo-Profil – ohne private Chats oder Zugangsdaten.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-label">Was es kann</div>
+          <div>
+            <h2>Vom Gespräch zur nachvollziehbaren Arbeit.</h2>
+            <p class="section-copy">Die wichtigsten Bausteine sind bewusst in einer Oberfläche zusammengeführt.</p>
+          </div>
+        </div>
+        <div class="capabilities">
+          <article class="capability"><div class="num">01</div><div><h3>Chat + Agenten</h3><p>Normale Antworten oder mehrstufige Aufgaben mit Werkzeugen und klarer Zuständigkeit.</p></div></article>
+          <article class="capability"><div class="num">02</div><div><h3>Lokale + Cloud-Modelle</h3><p>Das passende Modell kann nach Aufgabe, Leistung, Datenschutz und Kosten gewählt werden.</p></div></article>
+          <article class="capability"><div class="num">03</div><div><h3>Dateien, Terminal, MCP + Skills</h3><p>Die KI kann nicht nur erklären, sondern innerhalb erlaubter Bereiche praktisch arbeiten.</p></div></article>
+          <article class="capability"><div class="num">04</div><div><h3>AI-Hub + Projekte</h3><p>Banana Control bündelt Projektstatus, Aufgaben, Dienste und Windows-Laufzeiten.</p></div></article>
+          <article class="capability"><div class="num">05</div><div><h3>Recherche + Dokumente</h3><p>Quellenarbeit, Notizen, Dokumente, Kalender, E-Mail-Entwürfe und weitere Arbeitsbereiche.</p></div></article>
+          <article class="capability"><div class="num">06</div><div><h3>Kontrollierte Rechte</h3><p>Desktop Bridge und Agent Council bleiben begrenzt, protokolliert und bei Risiko freigabepflichtig.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="proof">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-label">Release-Prüfung</div>
+          <div>
+            <h2>Vorzeigbar heißt: nicht nur gebaut, sondern geprüft.</h2>
+            <p class="section-copy">Öffentliche Windows-Releases werden vor der Freigabe als portable App und als Installer geprüft.</p>
+          </div>
+        </div>
+        <div class="proof">
+          <article class="proof-main">
+            <div class="big-number">Prüfpflicht</div>
+            <h3>Automatisierte Tests und Funktionsprüfungen</h3>
+            <ul>
+              <li>Portable Version und Installer müssen erfolgreich starten</li>
+              <li>Health-Status und gemeldete Version müssen bestätigt sein</li>
+              <li>Es darf genau ein sichtbares App-Fenster erscheinen</li>
+              <li>Nach dem Schließen dürfen keine Restprozesse und kein belegter Port 7100 verbleiben</li>
+            </ul>
+          </article>
+          <aside class="proof-side">
+            <dl>
+              <div><dt>Plattform</dt><dd>Windows x64</dd></div>
+              <div><dt>Pakete</dt><dd>Installer + Portable ZIP (in Vorbereitung)</dd></div>
+              <div><dt>Integrität</dt><dd>SHA-256 + Manifest</dd></div>
+              <div><dt>Hinweis</dt><dd>Noch nicht digital signiert</dd></div>
+            </dl>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="idea">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-label">Eine nächste Idee</div>
+          <div>
+            <h2>Modell-Personen statt ein Modell für alles.</h2>
+            <p class="section-copy">Eine starke KI soll komplexe Aufgaben leiten, während kleinere lokale Modelle einfache Arbeiten günstiger und mit getrenntem Kontext übernehmen.</p>
+          </div>
+        </div>
+        <article class="idea">
+          <div>
+            <h3>Kostenbewusstes Routing</h3>
+            <p>Banana entscheidet nachvollziehbar, welche „Person“ eine Aufgabe übernehmen darf. Unsicherheit, Fehler oder Risiko führen automatisch zur stärkeren Instanz oder zurück zum Nutzer.</p>
+            <span class="planned">Geplant und bereits als sicherer Shadow-Router vorbereitet</span>
+          </div>
+          <div class="routing" aria-label="Geplante Modellrollen">
+            <div class="role"><strong>Leiter</strong><span>Starkes Cloud-Modell für Planung, Prüfung und schwierige Entscheidungen.</span></div>
+            <div class="role"><strong>Arbeiter</strong><span>Lokales mittleres Modell für normale Datei- und Werkzeugaufgaben.</span></div>
+            <div class="role"><strong>Bote</strong><span>Kleines lokales Modell für Status, Formatierung und kurze Antworten.</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>Banana OD · Windows-first AI workspace</span>
+      <span>Auf Basis von Odysseus · AGPL-3.0-or-later</span>
+    </div>
+  </footer>
+</body>
+</html>

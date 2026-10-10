@@ -4,6 +4,8 @@
 
 Banana OD verbindet normale KI-Unterhaltungen mit praktischer Arbeit auf dem eigenen PC. Je nach Freigabe können Modelle Dateien bearbeiten, Terminalbefehle ausführen, MCP-Dienste verwenden, Skills laden und größere Aufgaben in kontrollierte Schritte aufteilen.
 
+**[Banana-OD-Website öffnen](https://lokitheloki.github.io/banana-od/)**
+
 <p align="center">
   <img src="assets/banana-od-app.png" width="1280" alt="Banana OD in einem lokalen Windows-Fenster">
 </p>
